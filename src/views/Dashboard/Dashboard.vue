@@ -2,7 +2,7 @@
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { getPosts, getPostComment } from '../../services/blog'
 import { onMounted, ref } from 'vue'
-import { useStore } from '../../stores/store'
+import { useStore } from '@/stores/store'
 const store = useStore()
 
 interface Post {
