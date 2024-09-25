@@ -60,7 +60,7 @@ const isExpanded = (postId: number) => {
   return expandedPosts.value.has(postId)
 }
 
-const openModal = async (post) => {
+const openModal = async (post: any) => {
   selectedPost.value = post
   await fetchComments(post.id)
   isModalOpen.value = true
@@ -85,7 +85,7 @@ onMounted(() => {
           Our latest blog
         </h2>
         <div class="grid grid-cols-1 gap-y-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
-          <div v-for="post in paginatedPosts" :key="post.id" class="group rounded-2xl">
+          <div v-for="post in paginatedPosts" :key="post.id" class="group shadow-lg rounded-2xl">
             <div class="flex items-center">
               <img
                 src="https://pagedone.io/asset/uploads/1696244356.png"
@@ -97,7 +97,7 @@ onMounted(() => {
             >
               <span class="text-indigo-600 font-medium mb-3 block">{{ post.date }}</span>
               <h4
-                class="text-xl text-gray-900 font-medium leading-8 mb-5 truncate overflow-hidden whitespace-nowrap cursor-pointer"
+                class="text-xl text-black font-medium leading-8 mb-5 truncate overflow-hidden whitespace-nowrap cursor-pointer"
                 @click="openModal(post)"
               >
                 {{ post.title }}
@@ -108,7 +108,7 @@ onMounted(() => {
               <a
                 href="javascript:;"
                 @click="toggleExpand(post.id)"
-                class="cursor-pointer text-lg text-indigo-600 font-semibold"
+                class="cursor-pointer text-sm text-indigo-600 font-semibold"
               >
                 {{ isExpanded(post.id) ? 'Show less' : 'Read more..' }}
               </a>
