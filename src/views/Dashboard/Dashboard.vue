@@ -3,7 +3,14 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { getPosts, getPostComment } from '../../services/blog'
 import { onMounted, ref, computed } from 'vue'
 
-const posts = ref([])
+interface Post {
+  id: number
+  title: string
+  body: string
+  date: string
+}
+
+const posts = ref<Post[]>([])
 const currentPage = ref(1)
 const postsPerPage = 10
 const expandedPosts = ref(new Set())
