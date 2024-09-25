@@ -135,18 +135,18 @@ onMounted(() => {
     >
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl">
         <div class="flex justify-between items-center mb-4">
-          <h4 class="text-2xl font-semibold text-gray-900 dark:text-white">
+          <h4 class="text-2xl font-semibold text-gray-900 dark:text-black">
             {{ selectedPost?.title }}
           </h4>
         </div>
-        <p class="text-gray-700 dark:text-gray-300 mb-4">{{ selectedPost?.body }}</p>
+        <p class="text-gray-700 dark:text-black mb-4">{{ selectedPost?.body }}</p>
         <div class="mb-4">
           <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Comments</h4>
           <ul class="list-disc list-inside">
             <li
               v-for="comment in comments"
               :key="comment.id"
-              class="text-gray-700 bg-gray dark:text-gray-300"
+              class="text-gray-700 bg-gray dark:text-black"
             >
               {{ comment.body }}
             </li>
