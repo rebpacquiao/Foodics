@@ -1,10 +1,17 @@
 import { defineStore } from 'pinia'
 
+interface Post {
+  id: number
+  title: string
+  body: string
+  date: string
+}
+
 export const useStore = defineStore('main', {
   state: () => ({
     currentPage: 1,
     postsPerPage: 10,
-    posts: [] as Array<{ title: string }>,
+    posts: [] as Post[],
     isModalOpen: false,
     selectedPost: null,
     comments: [],
@@ -27,7 +34,7 @@ export const useStore = defineStore('main', {
     }
   },
   actions: {
-    setPosts(posts) {
+    setPosts(posts: Post[]) {
       this.posts = posts
     },
     nextPage() {
@@ -43,7 +50,7 @@ export const useStore = defineStore('main', {
     closeModal() {
       this.isModalOpen = false
     },
-    setSearchTerm(term) {
+    setSearchTerm(term: string) {
       this.searchTerm = term
     }
   }
