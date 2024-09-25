@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { getPosts, getPostComment } from '../../services/blog'
-import { onMounted, ref, computed, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { useStore } from '../../stores/store'
+const store = useStore()
 
 interface Post {
   id: number
@@ -11,9 +12,6 @@ interface Post {
   date: string
 }
 
-const posts = ref<Post[]>([])
-const currentPage = ref(1)
-const postsPerPage = 10
 const expandedPosts = ref(new Set())
 const selectedPost = ref<Post | null>(null)
 interface Comment {
@@ -23,38 +21,15 @@ interface Comment {
 
 const comments = ref<Comment[]>([])
 const isModalOpen = ref(false)
-const searchQuery = ref('')
 
 const fetchPosts = async () => {
   const response = await getPosts()
-  posts.value = response
+  store.setPosts(response)
 }
 
 const fetchComments = async (postId: number) => {
   const response = await getPostComment(postId)
   comments.value = response
-}
-
-const paginatedPosts = computed(() => {
-  const start = (currentPage.value - 1) * postsPerPage
-  const end = start + postsPerPage
-  return posts.value.slice(start, end)
-})
-
-const totalPages = computed(() => {
-  return Math.ceil(posts.value.length / postsPerPage)
-})
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++
-  }
-}
-
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--
-  }
 }
 
 const truncateText = (text: any, length = 100) => {
@@ -86,19 +61,6 @@ const closeModal = () => {
   comments.value = []
 }
 
-const filteredPosts = computed(() => {
-  if (!searchQuery.value) return posts.value
-  return posts.value.filter(
-    (post) =>
-      post.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      post.body.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-})
-
-watch(searchQuery, () => {
-  currentPage.value = 1
-})
-
 onMounted(() => {
   fetchPosts()
 })
@@ -112,7 +74,11 @@ onMounted(() => {
           Our latest blog
         </h2>
         <div class="grid grid-cols-1 gap-y-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
-          <div v-for="post in paginatedPosts" :key="post.id" class="group shadow-lg rounded-2xl">
+          <div
+            v-for="post in store.paginatedPosts"
+            :key="post.id"
+            class="group shadow-lg rounded-2xl"
+          >
             <div class="flex items-center">
               <img
                 src="https://pagedone.io/asset/uploads/1696244356.png"
@@ -144,16 +110,16 @@ onMounted(() => {
         </div>
         <div class="flex justify-center mt-8">
           <button
-            @click="prevPage"
-            :disabled="currentPage === 1"
+            @click="store.prevPage"
+            :disabled="store.currentPage === 1"
             class="px-4 py-2 mx-1 bg-gray-300 rounded disabled:opacity-50"
           >
             Previous
           </button>
-          <span class="px-4 py-2 mx-1">{{ currentPage }} / {{ totalPages }}</span>
+          <span class="px-4 py-2 mx-1">{{ store.currentPage }} / {{ store.totalPages }}</span>
           <button
-            @click="nextPage"
-            :disabled="currentPage === totalPages"
+            @click="store.nextPage"
+            :disabled="store.currentPage === store.totalPages"
             class="px-4 py-2 mx-1 bg-gray-300 rounded disabled:opacity-50"
           >
             Next
