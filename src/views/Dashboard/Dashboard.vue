@@ -61,7 +61,7 @@ onMounted(() => {
   <DefaultLayout>
     <section class="py-24 bg-white dark:bg-black">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 class="font-manrope text-4xl font-bold text-gray-900 text-center mb-16">
+        <h2 class="font-manrope text-4xl font-bold text-gray-900 dark:text-white text-center mb-16">
           Our latest blog
         </h2>
         <div class="grid grid-cols-1 gap-y-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
@@ -76,7 +76,9 @@ onMounted(() => {
               class="p-4 lg:p-6 transition-all dark:bg-white duration-300 rounded-b-2xl group-hover:bg-gray-50"
             >
               <span class="text-indigo-600 font-medium mb-3 block">{{ post.date }}</span>
-              <h4 class="text-xl text-gray-900 font-medium leading-8 mb-5">
+              <h4
+                class="text-xl text-gray-900 font-medium leading-8 mb-5 truncate overflow-hidden whitespace-nowrap"
+              >
                 {{ post.title }}
               </h4>
               <p class="text-gray-500 leading-6 mb-10">
