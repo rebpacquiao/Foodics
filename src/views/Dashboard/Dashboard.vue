@@ -75,7 +75,10 @@ onMounted(() => {
         </h2>
         <div class="grid grid-cols-1 gap-y-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
           <div
-            v-for="post in store.paginatedPosts as Post"
+            v-for="post in store.filteredPosts.slice(
+              (store.currentPage - 1) * store.postsPerPage,
+              store.currentPage * store.postsPerPage
+            )"
             :key="post.id"
             class="group shadow-lg rounded-2xl"
           >

@@ -4,10 +4,11 @@ export const useStore = defineStore('main', {
   state: () => ({
     currentPage: 1,
     postsPerPage: 10,
-    posts: [],
+    posts: [] as Array<{ title: string }>,
     isModalOpen: false,
     selectedPost: null,
-    comments: []
+    comments: [],
+    searchTerm: ''
   }),
   getters: {
     totalPages(state) {
@@ -17,6 +18,12 @@ export const useStore = defineStore('main', {
       const start = (state.currentPage - 1) * state.postsPerPage
       const end = start + state.postsPerPage
       return state.posts.slice(start, end)
+    },
+    filteredPosts(state) {
+      if (!state.searchTerm) return state.posts
+      return state.posts.filter((post) =>
+        (post as { title: string }).title.toLowerCase().includes(state.searchTerm.toLowerCase())
+      )
     }
   },
   actions: {
@@ -35,6 +42,9 @@ export const useStore = defineStore('main', {
     },
     closeModal() {
       this.isModalOpen = false
+    },
+    setSearchTerm(term) {
+      this.searchTerm = term
     }
   }
 })
