@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { getPosts, getPostComment } from '../../services/blog'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 interface Post {
   id: number
@@ -22,6 +23,7 @@ interface Comment {
 
 const comments = ref<Comment[]>([])
 const isModalOpen = ref(false)
+const searchQuery = ref('')
 
 const fetchPosts = async () => {
   const response = await getPosts()
@@ -83,6 +85,19 @@ const closeModal = () => {
   selectedPost.value = null
   comments.value = []
 }
+
+const filteredPosts = computed(() => {
+  if (!searchQuery.value) return posts.value
+  return posts.value.filter(
+    (post) =>
+      post.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      post.body.toLowerCase().includes(searchQuery.value.toLowerCase())
+  )
+})
+
+watch(searchQuery, () => {
+  currentPage.value = 1
+})
 
 onMounted(() => {
   fetchPosts()
