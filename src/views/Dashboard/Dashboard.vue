@@ -14,8 +14,13 @@ const posts = ref<Post[]>([])
 const currentPage = ref(1)
 const postsPerPage = 10
 const expandedPosts = ref(new Set())
-const selectedPost = ref(null)
-const comments = ref([])
+const selectedPost = ref<Post | null>(null)
+interface Comment {
+  id: number
+  body: string
+}
+
+const comments = ref<Comment[]>([])
 const isModalOpen = ref(false)
 
 const fetchPosts = async () => {
