@@ -1,16 +1,24 @@
 <script setup lang="ts">
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import { getPosts } from '../../services/blog'
+import { getPosts, getPostComment } from '../../services/blog'
 import { onMounted, ref, computed } from 'vue'
 
 const posts = ref([])
 const currentPage = ref(1)
 const postsPerPage = 10
 const expandedPosts = ref(new Set())
+const selectedPost = ref(null)
+const comments = ref([])
+const isModalOpen = ref(false)
 
 const fetchPosts = async () => {
   const response = await getPosts()
   posts.value = response
+}
+
+const fetchComments = async (postId: number) => {
+  const response = await getPostComment(postId)
+  comments.value = response
 }
 
 const paginatedPosts = computed(() => {
@@ -35,12 +43,12 @@ const prevPage = () => {
   }
 }
 
-const truncateText = (text, length = 100) => {
+const truncateText = (text: any, length = 100) => {
   if (text.length <= length) return text
   return text.substring(0, length) + '...'
 }
 
-const toggleExpand = (postId) => {
+const toggleExpand = (postId: number) => {
   if (expandedPosts.value.has(postId)) {
     expandedPosts.value.delete(postId)
   } else {
@@ -48,8 +56,20 @@ const toggleExpand = (postId) => {
   }
 }
 
-const isExpanded = (postId) => {
+const isExpanded = (postId: number) => {
   return expandedPosts.value.has(postId)
+}
+
+const openModal = async (post) => {
+  selectedPost.value = post
+  await fetchComments(post.id)
+  isModalOpen.value = true
+}
+
+const closeModal = () => {
+  isModalOpen.value = false
+  selectedPost.value = null
+  comments.value = []
 }
 
 onMounted(() => {
@@ -77,7 +97,8 @@ onMounted(() => {
             >
               <span class="text-indigo-600 font-medium mb-3 block">{{ post.date }}</span>
               <h4
-                class="text-xl text-gray-900 font-medium leading-8 mb-5 truncate overflow-hidden whitespace-nowrap"
+                class="text-xl text-gray-900 font-medium leading-8 mb-5 truncate overflow-hidden whitespace-nowrap cursor-pointer"
+                @click="openModal(post)"
               >
                 {{ post.title }}
               </h4>
@@ -113,5 +134,40 @@ onMounted(() => {
         </div>
       </div>
     </section>
+
+    <!-- Modal -->
+    <div
+      v-if="isModalOpen"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+    >
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl">
+        <div class="flex justify-between items-center mb-4">
+          <h4 class="text-2xl font-semibold text-gray-900 dark:text-white">
+            {{ selectedPost?.title }}
+          </h4>
+        </div>
+        <p class="text-gray-700 dark:text-gray-300 mb-4">{{ selectedPost?.body }}</p>
+        <div class="mb-4">
+          <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Comments</h4>
+          <ul class="list-disc list-inside">
+            <li
+              v-for="comment in comments"
+              :key="comment.id"
+              class="text-gray-700 bg-gray dark:text-gray-300"
+            >
+              {{ comment.body }}
+            </li>
+          </ul>
+        </div>
+        <div class="flex justify-end">
+          <button
+            @click="closeModal"
+            class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
   </DefaultLayout>
 </template>
