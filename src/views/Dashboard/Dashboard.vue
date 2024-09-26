@@ -17,6 +17,7 @@ const selectedPost = ref<Post | null>(null)
 interface Comment {
   id: number
   body: string
+  name: string
 }
 
 const comments = ref<Comment[]>([])
