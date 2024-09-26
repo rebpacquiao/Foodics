@@ -52,6 +52,7 @@ export const useStore = defineStore('main', {
     },
     setSearchTerm(term: string) {
       this.searchTerm = term
+      this.currentPage = 1
     }
   }
 })
