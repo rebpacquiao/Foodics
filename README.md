@@ -27,3 +27,5 @@ Usage
 Navigation: Use the sidebar navigation links to navigate between different sections of the dashboard.
 Post Details: Click on a post's title to open a modal displaying more details.
 Dark Mode: Toggle the dark mode switch to switch between light and dark themes.
+
+Demo link--> https://foodic-demo.netlify.app/
